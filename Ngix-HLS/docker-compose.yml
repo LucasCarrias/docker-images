@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  server:
+    build: .
+    ports:
+      - 8080:8080
+      - 1935:1935
+    command: /usr/local/nginx/sbin/nginx -g 'daemon off;'
+
+  push_file:
+    build:
+      context: .
+      dockerfile: push-file.Dockerfile
+    command: ffmpeg -re -i video.mp4 -vcodec libx264 -vprofile baseline -g 30 -acodec aac -strict -2 -f flv rtmp://server/show/stream
+    depends_on:
+      - server
+    volumes:
+      - ./Playlist:/Playlist
+    restart: always

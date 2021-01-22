@@ -1,0 +1,1 @@
+ffmpeg -f pulse -i default -f flv rtmp://localhost/show/stream
