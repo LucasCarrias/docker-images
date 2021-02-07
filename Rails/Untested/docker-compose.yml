@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    ports: 
+      - 3000:3000
+    env_file: .env.development
+    volumes:
+      - ./:/app
+    depends_on:
+      - db
+    command: ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+  db:
+    image: postgres:12
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=strake_development
+    env_file: .env.development
+    volumes:
+      - dev:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "lucascarrias@outlook.com"
+      PGADMIN_DEFAULT_PASSWORD: "password"
+    ports:
+      - "6543:80"
+    depends_on:
+      - db
+    
+volumes:
+  dev:
